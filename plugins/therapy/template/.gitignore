@@ -1,0 +1,10 @@
+# Audio never enters git. Transcripts do (keep this repo local or on an
+# encrypted private remote only).
+*.m4a
+*.mp3
+*.wav
+*.env
+.DS_Store
+.claude/settings.local.json
+local-handoff.md
+__pycache__/

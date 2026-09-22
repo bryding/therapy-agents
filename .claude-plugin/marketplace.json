@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "therapy-agents",
+  "description": "An LLM-assisted therapy harness for Claude Code — journaling, session summaries from recordings, letters, check-ins, pattern review, and session prep, run inside a private per-person 'life repo'.",
+  "owner": {
+    "name": "Ben Ryding"
+  },
+  "plugins": [
+    {
+      "name": "therapy",
+      "description": "Core therapy-harness skills (journal, summarize-session, ingest-recordings, letter, check-in, prep-session, review-patterns, digest-journal, import-journal, reminders, onboard, update-harness), the session-start hook, and the `therapy` CLI.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ben Ryding"
+      },
+      "source": "./plugins/therapy",
+      "category": "productivity"
+    }
+  ]
+}

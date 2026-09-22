@@ -1,0 +1,10 @@
+{
+  "owner": "{{OWNER}}",
+  "partner": null,
+  "therapists": { "individual": null, "couples": null },
+  "timezone": "America/Denver",
+  "recordings_remote": "gdrive:Recordings",
+  "elevenlabs_key_file": "~/.config/therapy-harness/elevenlabs.env",
+  "calendar_id": "primary",
+  "journal_export": "~/Documents/Journal/AppleJournalEntries"
+}

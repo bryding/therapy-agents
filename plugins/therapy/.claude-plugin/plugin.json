@@ -1,0 +1,8 @@
+{
+  "name": "therapy",
+  "version": "0.1.0",
+  "description": "Therapy-harness skills, session-start hook, and the `therapy` CLI. Active only inside a life repo (a folder with .therapy-harness.json).",
+  "author": {
+    "name": "Ben Ryding"
+  }
+}

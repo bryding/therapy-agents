@@ -1,0 +1,45 @@
+#!/bin/bash
+# therapy — CLI for the therapy harness. Installed as a shim in ~/.local/bin by
+# install.sh; the shim always execs the newest installed plugin version.
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LIB="$HERE/lib"
+MP="therapy-agents"
+
+usage() {
+  cat <<USAGE
+therapy <command>
+
+  ingest list|run|local ...   Drive recordings -> ElevenLabs -> docs/transcripts/
+  stt check|transcribe ...    ElevenLabs speech-to-text directly
+  import-journal <dir> [--dry-run]   Apple Journal export -> docs/journal/
+  config [get KEY|root]       show this life repo's .therapy-harness.json
+  new-life <dir> --owner NAME [--partner NAME] [--therapist NAME] [--couples NAME]
+                              scaffold a new private life repo from the template
+  update                      pull the latest harness from GitHub and install it
+  version                     installed plugin version (and latest available)
+Run inside a life repo (a folder containing .therapy-harness.json).
+USAGE
+}
+
+cmd="${1:-}"; shift || true
+case "$cmd" in
+  ingest)         exec python3 "$LIB/ingest_recordings.py" "$@" ;;
+  stt)            exec python3 "$LIB/elevenlabs_stt.py" "$@" ;;
+  import-journal) exec python3 "$LIB/import_journal.py" "$@" ;;
+  config)         exec python3 "$LIB/harness.py" "$@" ;;
+  new-life)       exec bash "$HERE/lib/new-life.sh" "$HERE" "$@" ;;
+  version)
+    installed=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$HERE/.claude-plugin/plugin.json" | head -1)
+    mpdir="$HOME/.claude/plugins/marketplaces/$MP"
+    latest=""
+    [ -f "$mpdir/plugins/therapy/.claude-plugin/plugin.json" ] && \
+      latest=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$mpdir/plugins/therapy/.claude-plugin/plugin.json" | head -1)
+    echo "installed: $installed${latest:+  (marketplace clone: $latest)}" ;;
+  update)
+    claude plugin marketplace update "$MP"
+    claude plugin update "therapy@$MP" || claude plugin install "therapy@$MP"
+    echo "Updated. Restart Claude Code sessions to load the new skills." ;;
+  ""|-h|--help|help) usage ;;
+  *) echo "unknown command: $cmd" >&2; usage >&2; exit 1 ;;
+esac
