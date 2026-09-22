@@ -18,7 +18,9 @@ jobs:
         run: |
           set -eu
           if [ "$EVENT_NAME" = "pull_request" ]; then BASE=$(git merge-base "$PR_BASE_SHA" HEAD); else BASE="$PUSH_BEFORE_SHA"; fi
-          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
+          # New branch (first push): nothing has been published yet to compare against.
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then echo "new branch; skip"; exit 0; fi
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
             BASE=$(git rev-parse HEAD~1 2>/dev/null || true)
           fi
           [ -n "$BASE" ] || { echo "single commit; skip"; exit 0; }
