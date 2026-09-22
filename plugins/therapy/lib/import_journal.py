@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Import an Apple Journal export folder into docs/journal/.
 
-Usage: python3 scripts/import_journal.py <export-folder> [--dry-run]
+Usage: therapy import-journal <export-folder> [--dry-run]   (run inside a life repo)
 
 Apple's export is a folder of one HTML file per entry (plus a resources/
 media folder). Layout has varied between OS versions, so this walks the tree

@@ -1,0 +1,20 @@
+#!/bin/bash
+# Life-repo guard: refuse any push to a remote not listed in
+# .therapy-harness.json "allowed_remotes" (URLs or remote names). Default: none.
+remote_name="$1"; remote_url="$2"
+root=$(git rev-parse --show-toplevel)
+ok=$(python3 - "$root/.therapy-harness.json" "$remote_name" "$remote_url" <<'PY'
+import json, sys
+cfg, name, url = sys.argv[1:]
+try:
+    allowed = json.load(open(cfg)).get("allowed_remotes") or []
+except Exception:
+    allowed = []
+print("yes" if name in allowed or url in allowed else "no")
+PY
+)
+if [ "$ok" != "yes" ]; then
+  echo "BLOCKED: this life repo only pushes to remotes in .therapy-harness.json allowed_remotes." >&2
+  echo "  remote: $remote_name $remote_url" >&2
+  exit 1
+fi

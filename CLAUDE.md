@@ -11,7 +11,10 @@ this repo must never contain anyone's life.
 plugins/therapy/
   .claude-plugin/plugin.json      plugin manifest (name + version)
   skills/<skill>/SKILL.md         the skills (frontmatter: name + description)
-  hooks/hooks.json, session-start.sh   SessionStart hook; silent outside a life repo
+  hooks/hooks.json, session-start.sh   SessionStart hook; silent outside a life repo;
+                                  injects rules/core.md every session
+  rules/core.md                   the load-bearing rules (safety, honesty, journal voice,
+                                  state/timing, other people, privacy); bump minor on change
   bin/therapy                     the CLI (install.sh puts a shim in ~/.local/bin)
   lib/*.py, new-life.sh           ingest, ElevenLabs STT, journal import, config, scaffolder
   template/                       what `therapy new-life` copies into a new life repo
@@ -42,8 +45,13 @@ Forgetting step 2 is the classic failure: nothing publishes, no error.
   or in a repo-local skill there.
 - Skills must work for someone who isn't in a relationship, doesn't record
   sessions, and doesn't use Apple Journal: optional features degrade quietly.
-- The template's CLAUDE.md carries the load-bearing rules (honesty, journal
-  voice, state/timing, privacy). Change those deliberately, bump minor.
+- The load-bearing rules live in rules/core.md and reach every life repo on
+  update (the hook prints them). The template CLAUDE.md holds only the
+  owner's own section. Change core rules deliberately, bump minor.
+- Privacy gate: `git config core.hooksPath .githooks` once per checkout; the
+  pre-commit hook greps staged changes against ~/.config/therapy-harness/denylist
+  (names of real people, one per line; never committed). CI is the backstop.
+- Maintainer workflow: .claude/skills/publish-harness (repo-local, not shipped).
 - Life repos keep what they already have when the template changes; the
   template only seeds new repos. Note template changes in the commit message
   so existing users can port them by hand if they want.

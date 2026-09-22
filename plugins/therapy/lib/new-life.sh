@@ -18,11 +18,17 @@ done
 mkdir -p "$DIR"
 cp -R "$PLUGIN/template/." "$DIR/"
 python3 - "$DIR" "$OWNER" "$PARTNER" "$THERAPIST" "$COUPLES" <<'PY'
-import json, sys, pathlib
+import json, sys, pathlib, os
+
+def local_tz():
+    try:
+        return os.path.realpath('/etc/localtime').split('zoneinfo/')[1]
+    except Exception:
+        return 'UTC'
 d, owner, partner, therapist, couples = sys.argv[1:]
 root = pathlib.Path(d)
 cfg = json.loads((root / ".therapy-harness.json").read_text())
-cfg.update(owner=owner, partner=partner or None,
+cfg.update(owner=owner, partner=partner or None, timezone=cfg.get("timezone") or local_tz(),
            therapists={"individual": therapist or None, "couples": couples or None})
 (root / ".therapy-harness.json").write_text(json.dumps(cfg, indent=2) + "\n")
 for p in root.rglob("*.md"):
@@ -33,5 +39,9 @@ for p in root.rglob("*.md"):
 PY
 cd "$DIR"
 [ -d .git ] || git init -q -b main
-git add -A && git -c user.name="${GIT_AUTHOR_NAME:-$OWNER}" commit -qm "Start life repo from therapy-agents template" || true
+slug=$(printf '%s' "$OWNER" | tr 'A-Z ' 'a-z-' | tr -cd 'a-z0-9-')
+git config user.name "$OWNER"
+git config user.email "${slug:-owner}@life.invalid"
+cp "$PLUGIN/lib/pre-push" .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+git add -A && git commit -qm "Start life repo from therapy-agents template" || true
 echo "Created $DIR. Next: cd $DIR && claude, then run /onboard."

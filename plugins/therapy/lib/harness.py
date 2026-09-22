@@ -8,8 +8,9 @@ CONFIG_NAME = ".therapy-harness.json"
 DEFAULTS = {
     "recordings_remote": "gdrive:Recordings",
     "elevenlabs_key_file": "~/.config/therapy-harness/elevenlabs.env",
-    "timezone": "America/Denver",
+    "timezone": None,
     "calendar_id": "primary",
+    "allowed_remotes": [],
     "journal_export": "~/Documents/Journal/AppleJournalEntries",
 }
 

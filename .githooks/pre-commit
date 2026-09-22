@@ -1,0 +1,10 @@
+#!/bin/bash
+# Block commits that mention anyone on the maintainer's private denylist.
+list="$HOME/.config/therapy-harness/denylist"
+[ -f "$list" ] || { echo "pre-commit: no $list; privacy scan skipped (create it with real names, one per line)" >&2; exit 0; }
+hits=$(git diff --cached -U0 --no-color | grep '^+' | grep -v '^+++' | grep -iwFf <(grep -v '^\s*$' "$list") || true)
+if [ -n "$hits" ]; then
+  echo "BLOCKED: staged changes contain denylisted terms (this repo is public):" >&2
+  echo "$hits" | head -20 >&2
+  exit 1
+fi

@@ -3,7 +3,7 @@ name: letter
 description: Draft or revise something the owner will actually send or read to a real person (partner by default). Use when they say "write to <name>", "letter", "text them", "help me say", or want to turn a conversation or journal into a message.
 ---
 Draft to `docs/letters/YYYY-MM-DD_for-<name>.md`. Default recipient: the
-partner named in CLAUDE.md.
+`partner` in `.therapy-harness.json`; if none, ask who it's for.
 
 Rules, in order:
 1. **Gate first.** Are they activated right now? Substances, after midnight,

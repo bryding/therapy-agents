@@ -44,7 +44,7 @@ jobs:
           jq -e '.hooks' plugins/therapy/hooks/hooks.json >/dev/null
           jq -e '.owner' plugins/therapy/template/.therapy-harness.json >/dev/null
           for f in plugins/therapy/lib/*.py; do python3 -m py_compile "$f"; done
-          for f in plugins/therapy/bin/therapy plugins/therapy/hooks/*.sh plugins/therapy/lib/*.sh install.sh bumpVersion.sh; do bash -n "$f"; done
+          for f in plugins/therapy/bin/therapy plugins/therapy/hooks/*.sh plugins/therapy/lib/*.sh plugins/therapy/lib/pre-push .githooks/pre-commit install.sh bumpVersion.sh; do bash -n "$f"; done
           for s in plugins/therapy/skills/*/SKILL.md; do
             head -5 "$s" | grep -q '^name:' && head -5 "$s" | grep -q '^description:' || { echo "::error::$s missing frontmatter"; exit 1; }
           done

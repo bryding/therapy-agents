@@ -18,6 +18,7 @@ therapy <command>
                               scaffold a new private life repo from the template
   update                      pull the latest harness from GitHub and install it
   version                     installed plugin version (and latest available)
+  doctor                      check this machine and life repo are set up right
 Run inside a life repo (a folder containing .therapy-harness.json).
 USAGE
 }
@@ -29,6 +30,7 @@ case "$cmd" in
   import-journal) exec python3 "$LIB/import_journal.py" "$@" ;;
   config)         exec python3 "$LIB/harness.py" "$@" ;;
   new-life)       exec bash "$HERE/lib/new-life.sh" "$HERE" "$@" ;;
+  doctor)         exec bash "$HERE/lib/doctor.sh" "$HERE" ;;
   version)
     installed=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$HERE/.claude-plugin/plugin.json" | head -1)
     mpdir="$HOME/.claude/plugins/marketplaces/$MP"
@@ -37,6 +39,7 @@ case "$cmd" in
       latest=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$mpdir/plugins/therapy/.claude-plugin/plugin.json" | head -1)
     echo "installed: $installed${latest:+  (marketplace clone: $latest)}" ;;
   update)
+    export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
     claude plugin marketplace update "$MP"
     claude plugin update "therapy@$MP" || claude plugin install "therapy@$MP"
     echo "Updated. Restart Claude Code sessions to load the new skills." ;;
